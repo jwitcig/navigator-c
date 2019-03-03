@@ -18,12 +18,17 @@ int calculateLocationY(int index, int gridWidth) {
   return index / gridWidth;
 }
 
+void getTime(struct timespec *time) {
+    clock_gettime(CLOCK_MONOTONIC_RAW, &time);
+}
+
+uint64_t elapsedTime(struct timespec *start, struct timespec *end) {
+    return (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_nsec - start.tv_nsec) / 1000;
+}
+
 int main(int argc, char** argv){
     struct timespec start, end;
-    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-
-
-
+    getTime(&start);
 
     Image *image = read_png_file("../map-resources/loz.png");
 
@@ -37,12 +42,7 @@ int main(int argc, char** argv){
 
     printf("blues: %d / %d total\n", blueCount, image->width * image->height);
 
-
-
-
-    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
-    uint64_t delta_us = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_nsec - start.tv_nsec) / 1000;
-    printf("%f seconds\n", (float)delta_us / 1000 / 1000);
-
+    getTime(&end); 
+    printf("%f seconds\n", (float)elapsedTime(&start, &end) / 1000 / 1000);
     return 0;
 }
